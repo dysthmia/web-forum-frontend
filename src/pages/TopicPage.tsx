@@ -1,10 +1,11 @@
-import { useParams } from 'react-router'
-import { ApiContractPending } from '../shared/ui/ApiContractPending.tsx'
+import { useParams, useSearchParams } from 'react-router'
+import { PostItem } from '../entities/post/ui/PostItem.tsx'
+import { useTopicQuery } from '../features/forum/api/queries.ts'
+import { formatDate } from '../shared/lib/formatDate.ts'
 import { Container } from '../shared/ui/Container.tsx'
+import { ErrorState } from '../shared/ui/ErrorState.tsx'
+import { LoadingState } from '../shared/ui/LoadingState.tsx'
 import { PageTitle } from '../shared/ui/PageTitle.tsx'
+import { Pagination } from '../shared/ui/Pagination.tsx'
 
-export function TopicPage() {
-  const { id } = useParams()
-  if (!id) return null
-  return <main className="py-8"><Container><PageTitle title="Тема" description={`Обсуждение #${id}`} /><div className="mt-5"><ApiContractPending resource="Сообщения темы" /></div></Container></main>
-}
+export function TopicPage() { const { id = '' } = useParams(); const [params] = useSearchParams(); const topicId = Number(id); const page = Number(params.get('page')) || 1; const query = useTopicQuery(Number.isSafeInteger(topicId) && topicId > 0 ? topicId : undefined, { page, pageSize: 20 }); if (query.isPending) return <main className="py-8"><Container><LoadingState label="Загрузка темы…" /></Container></main>; if (query.isError) return <main className="py-8"><Container><ErrorState message={query.error.message} onRetry={() => void query.refetch()} /></Container></main>; const topic = query.data; return <main className="py-8"><Container><PageTitle title={topic.title ?? `Тема #${topic.id}`} description={`${topic.viewCount} просмотров${topic.isClosed ? ' · закрыта' : ''}${topic.isPinned ? ' · закреплена' : ''}`} /><div className="mt-5"><PostItem author={`Пользователь #${topic.firstPost.authorId}`} position={topic.firstPost.position} publishedAt={formatDate(topic.firstPost.createdAt)} content={topic.firstPost.content ?? ''} edited={topic.firstPost.updatedAt !== topic.firstPost.createdAt} />{topic.replies.items?.sort((left, right) => left.position - right.position).map((post) => <PostItem key={post.id} author={`Пользователь #${post.authorId}`} position={post.position} publishedAt={formatDate(post.createdAt)} content={post.content ?? ''} edited={post.updatedAt !== post.createdAt} />)}<Pagination page={topic.replies.page} totalPages={Math.ceil(topic.replies.totalCount / topic.replies.pageSize)} /></div></Container></main> }

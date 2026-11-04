@@ -1,16 +1,15 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
-import { ApiContractPending } from '../shared/ui/ApiContractPending.tsx'
+import { Link, useNavigate, useSearchParams } from 'react-router'
+import { useSearchQuery } from '../features/forum/api/queries.ts'
+import { formatDate } from '../shared/lib/formatDate.ts'
 import { Button } from '../shared/ui/Button.tsx'
 import { Container } from '../shared/ui/Container.tsx'
+import { EmptyState } from '../shared/ui/EmptyState.tsx'
+import { ErrorState } from '../shared/ui/ErrorState.tsx'
 import { Input } from '../shared/ui/Input.tsx'
+import { LoadingState } from '../shared/ui/LoadingState.tsx'
 import { PageTitle } from '../shared/ui/PageTitle.tsx'
+import { Pagination } from '../shared/ui/Pagination.tsx'
 
-export function SearchPage() {
-  const [searchParams] = useSearchParams()
-  const navigate = useNavigate()
-  const [query, setQuery] = useState(searchParams.get('q') ?? '')
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); const next = query.trim(); navigate(next ? `/search?q=${encodeURIComponent(next)}` : '/search') }
-  return <main className="py-8"><Container><PageTitle title="Поиск" description="Поиск по темам и сообщениям." /><form className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end" onSubmit={handleSubmit}><div className="flex-1"><Input label="Запрос" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Введите запрос" /></div><Button type="submit">Найти</Button></form><div className="mt-6"><ApiContractPending resource={query.trim() ? `Результаты для «${query.trim()}»` : 'Результаты поиска'} /></div></Container></main>
-}
+export function SearchPage() { const [params] = useSearchParams(); const navigate = useNavigate(); const urlQuery = params.get('q') ?? ''; const page = Number(params.get('page')) || 1; const [query, setQuery] = useState(urlQuery); const result = useSearchQuery(urlQuery, { page, pageSize: 20 }); const submit = (event: FormEvent<HTMLFormElement>) => { event.preventDefault(); const value = query.trim(); navigate(value ? `/search?q=${encodeURIComponent(value)}` : '/search') }; return <main className="py-8"><Container><PageTitle title="Поиск" description="Поиск по темам и сообщениям." /><form className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end" onSubmit={submit}><div className="flex-1"><Input label="Запрос" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Введите запрос" /></div><Button type="submit">Найти</Button></form>{urlQuery ? <div className="mt-6">{result.isPending ? <LoadingState label="Поиск…" /> : result.isError ? <ErrorState message={result.error.message} onRetry={() => void result.refetch()} /> : result.data.items?.length ? <><div>{result.data.items.map((item) => <article key={item.topicId} className="border-b border-forum-border py-4"><Link to={`/topics/${item.topicId}`} className="font-medium text-forum-text hover:underline">{item.title ?? `Тема #${item.topicId}`}</Link>{item.fragment ? <p className="mt-2 text-sm text-forum-muted">{item.fragment}</p> : null}<p className="mt-2 text-xs text-forum-muted">{formatDate(item.createdAt)}</p></article>)}</div><Pagination page={result.data.page} totalPages={Math.ceil(result.data.totalCount / result.data.pageSize)} /></> : <EmptyState title="Ничего не найдено" description="Попробуйте изменить запрос." />}</div> : null}</Container></main> }
