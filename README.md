@@ -1,75 +1,129 @@
-# React + TypeScript + Vite
+<div align="center">
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# forum.
 
-Currently, two official plugins are available:
+**Платформа для обсуждений, вопросов и обмена знаниями.**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+</div>
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## О проекте
 
-## Expanding the ESLint configuration
+**forum.** — веб-форум с категориями, тематическими обсуждениями и линейными сообщениями. Здесь можно находить ответы на вопросы, участвовать в обсуждениях, сохранять интересные темы и взаимодействовать с сообществом.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Проект состоит из **двух независимых репозиториев**: этот репозиторий содержит клиентское приложение, а серверная часть разрабатывается отдельно на **ASP.NET Core, PostgreSQL и Redis**. Frontend общается с backend по HTTP API.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Интерфейс ориентирован на удобство чтения: компактные списки тем, понятная навигация и минимум визуального шума. Вдохновение — лаконичность современных приложений вроде ChatGPT, без копирования их фирменных элементов.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Возможности
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Раздел | Что предусмотрено |
+|:--|:--|
+| **Обсуждения** | Лента новых и популярных тем, категории, закреплённые и закрытые темы |
+| **Темы** | Первый пост и ответы в едином хронологическом потоке |
+| **Поиск** | Поиск по заголовкам и сообщениям на русском и английском языках через backend |
+| **Пользователи** | Регистрация, вход, публичные профили и личные настройки |
+| **Взаимодействие** | Лайки, дизлайки, избранное, редактирование своих сообщений |
+| **Модерация** | Жалобы, блокировки, управление темами и категориями с учётом ролей |
 
+### Маршруты
+
+Маршруты ниже — **планируемая структура интерфейса**, а не перечень гарантированно реализованных страниц.
+
+| Страница | Маршрут | Доступ |
+|:--|:--|:--|
+| Главная | `/` | Все |
+| Категории | `/categories` | Все |
+| Темы категории | `/categories/:slug` | Все |
+| Обсуждение | `/topics/:id` | Все |
+| Поиск | `/search` | Все |
+| Публичный профиль | `/users/:username` | Все |
+| Вход / регистрация | `/login`, `/register` | Гости |
+| Создание темы | `/topics/new` | Авторизованные |
+| Избранное | `/bookmarks` | Авторизованные |
+| Настройки | `/settings` | Авторизованные |
+| Жалобы и блокировки | `/moderation/*` | Модераторы и администраторы |
+| Управление форумом | `/admin/*` | Администраторы |
+
+## Технологии
+
+| Технология | Назначение |
+|:--|:--|
+| **React + TypeScript** | Компоненты и строгая типизация |
+| **Vite** | Разработка и production-сборка |
+| **Tailwind CSS v4** | Стили и дизайн-токены |
+| **React Router** | Клиентская маршрутизация |
+| **Axios** | HTTP-клиент для backend API |
+| **TanStack Query** | Получение, кэширование и обновление серверных данных |
+| **React Hook Form + Zod** | Формы и валидация |
+| **Lucide React** | Монохромные иконки |
+| **ESLint** | Статическая проверка кода |
+| **Vitest + Testing Library** | Планируемое тестирование компонентов и сценариев |
+
+## Локальный запуск
+
+### Требования
+
+- Node.js актуальной LTS-версии, совместимой с используемым Vite;
+- npm;
+- Git;
+- Для запросов к реальным данным — запущенный backend и его актуальный API-контракт.
+
+### Установка
+
+```bash
+git clone <URL_ВАШЕГО_FRONTEND_РЕПОЗИТОРИЯ>
+cd web-forum-frontend
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+### Переменные окружения
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Скопируйте `.env.example` в `.env.local` и укажите адрес вашего локального backend. После любого изменения `.env*` перезапустите Vite: переменные читаются при запуске dev-сервера.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```dotenv
+# Укажите подтверждённый адрес локального ASP.NET Core API
+VITE_API_BASE_URL=<ваш URL API>
+VITE_API_TIMEOUT_MS=10000
+VITE_ENABLE_DEV_FIXTURES=false
 ```
+
+Переменные с префиксом `VITE_` доступны в браузерной сборке. **Не храните в них JWT-секреты, пароли, ключи доступа и другие чувствительные данные.** Адрес API должен соответствовать фактически запущенному backend; также потребуется корректная настройка CORS на сервере.
+
+### Запуск приложения
+
+```bash
+npm run dev
+```
+
+Vite выведет локальный адрес приложения в терминал (обычно `http://localhost:5173`).
+
+### Проверки и сборка
+
+```bash
+npm run lint
+npm run build
+npm run preview
+```
+
+Тесты запускаются командой `npm run test` (watch mode) или `npm run test:run` (один запуск).
+
+> Если шаблон Vite установил TypeScript 7 и npm сообщает о конфликте с `typescript-eslint` 8.x, используйте совместимую версию TypeScript, например 5.9.x, без `--force` и `--legacy-peer-deps`.
+
+## Архитектура
+
+```mermaid
+flowchart TD
+    UI[React pages & components] --> Q[TanStack Query]
+    Q --> HTTP[Axios API client]
+    HTTP --> API[ASP.NET Core Web API]
+    API --> PG[(PostgreSQL)]
+    API --> REDIS[(Redis)]
+```
+
+Frontend отвечает за маршруты, отображение данных, формы и пользовательское взаимодействие. **Вся критичная проверка прав и бизнес-правил остаётся на backend**: скрытая кнопка не является механизмом безопасности.
+
+Клиент не должен придумывать HTTP-маршруты, DTO или способ передачи refresh-токенов. Интеграция выполняется по реальной OpenAPI/Swagger-спецификации серверного репозитория.
+
+Организация исходников строится вокруг страниц, переиспользуемых компонентов, API-клиента и отдельных функциональных областей. Существующая структура Vite сохраняется и развивается постепенно.
