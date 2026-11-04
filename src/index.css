@@ -8,11 +8,15 @@
   --color-forum-text: #f5f5f5;
   --color-forum-muted: #a3a3a3;
   --color-forum-subtle: #737373;
+  --color-forum-primary: #f5f5f5;
+  --color-forum-primary-text: #171717;
+  --color-forum-focus: #f5f5f5;
 }
 
-:root { color: var(--color-forum-text); background: var(--color-forum-bg); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-synthesis: none; text-rendering: optimizeLegibility; }
+:root { color-scheme: dark; color: var(--color-forum-text); background: var(--color-forum-bg); font-family: Inter, ui-sans-serif, system-ui, sans-serif; font-synthesis: none; text-rendering: optimizeLegibility; }
 * { box-sizing: border-box; }
 body { min-width: 320px; min-height: 100svh; margin: 0; background: var(--color-forum-bg); }
 button, a { outline-offset: 3px; }
 button:focus-visible, a:focus-visible { outline: 2px solid var(--color-forum-text); }
+::selection { color: var(--color-forum-primary-text); background: var(--color-forum-primary); }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; } }

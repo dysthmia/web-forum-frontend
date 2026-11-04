@@ -1,0 +1,6 @@
+import { AlertCircle } from 'lucide-react'
+import { forwardRef, useId } from 'react'
+import type { InputHTMLAttributes } from 'react'
+
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> { label: string; hint?: string; error?: string }
+export const Input = forwardRef<HTMLInputElement, InputProps>(function Input({ error, hint, id, label, required, ...props }, ref) { const generatedId = useId(); const inputId = id ?? generatedId; const hintId = `${inputId}-hint`; const errorId = `${inputId}-error`; return <div className="grid gap-2"><label htmlFor={inputId} className="text-sm font-medium text-forum-text">{label}{required ? <span aria-hidden="true"> *</span> : null}</label><input {...props} ref={ref} id={inputId} required={required} aria-invalid={Boolean(error)} aria-describedby={error ? errorId : hint ? hintId : undefined} className="min-h-10 w-full rounded-md border border-forum-border bg-forum-bg px-3 text-sm text-forum-text placeholder:text-forum-subtle focus:outline-none focus:ring-2 focus:ring-forum-focus disabled:cursor-not-allowed disabled:opacity-50" />{hint ? <p id={hintId} className="text-sm text-forum-muted">{hint}</p> : null}{error ? <p id={errorId} className="flex items-center gap-1 text-sm text-forum-text"><AlertCircle className="size-4" aria-hidden="true" />{error}</p> : null}</div> })

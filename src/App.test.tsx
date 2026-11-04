@@ -7,6 +7,6 @@ describe('App', () => {
   it('renders the home route placeholder', () => {
     render(<MemoryRouter initialEntries={['/']}><App /></MemoryRouter>)
 
-    expect(screen.getByRole('heading', { name: 'Форум' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Обсуждения' })).toBeInTheDocument()
   })
 })

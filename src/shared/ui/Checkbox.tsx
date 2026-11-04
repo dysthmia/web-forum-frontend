@@ -1,0 +1,5 @@
+import { forwardRef, useId } from 'react'
+import type { InputHTMLAttributes } from 'react'
+
+interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> { label: string; error?: string }
+export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox({ error, id, label, required, ...props }, ref) { const generatedId = useId(); const checkboxId = id ?? generatedId; const errorId = `${checkboxId}-error`; return <div className="grid gap-2"><label className="flex min-h-10 items-center gap-2 text-sm text-forum-text" htmlFor={checkboxId}><input {...props} ref={ref} id={checkboxId} type="checkbox" required={required} aria-invalid={Boolean(error)} aria-describedby={error ? errorId : undefined} className="size-4 accent-forum-primary focus:outline-none focus:ring-2 focus:ring-forum-focus disabled:cursor-not-allowed" />{label}{required ? <span aria-hidden="true"> *</span> : null}</label>{error ? <p id={errorId} className="text-sm text-forum-text">Ошибка: {error}</p> : null}</div> })

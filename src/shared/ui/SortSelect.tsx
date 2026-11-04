@@ -1,0 +1,4 @@
+import { useSearchParams } from 'react-router'
+interface SortOption { value: string; label: string }
+interface SortSelectProps { options: SortOption[]; label?: string }
+export function SortSelect({ label = 'Сортировка', options }: SortSelectProps) { const [searchParams, setSearchParams] = useSearchParams(); const value = searchParams.get('sort') ?? options[0]?.value ?? ''; return <label className="flex items-center gap-2 text-sm text-forum-muted">{label}<select value={value} className="min-h-10 rounded-md border border-forum-border bg-forum-bg px-2 text-forum-text" onChange={(event) => { const next = new URLSearchParams(searchParams); next.set('sort', event.target.value); next.delete('page'); setSearchParams(next) }}>{options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label> }

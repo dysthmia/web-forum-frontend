@@ -1,0 +1,7 @@
+import { X } from 'lucide-react'
+import { useEffect, useRef } from 'react'
+import { Button } from '../../shared/ui/Button.tsx'
+import { Sidebar } from './Sidebar.tsx'
+
+interface MobileNavigationProps { open: boolean; onClose: () => void }
+export function MobileNavigation({ onClose, open }: MobileNavigationProps) { const closeButtonRef = useRef<HTMLButtonElement>(null); useEffect(() => { if (!open) return; const previousOverflow = document.body.style.overflow; document.body.style.overflow = 'hidden'; closeButtonRef.current?.focus(); return () => { document.body.style.overflow = previousOverflow } }, [open]); useEffect(() => { const closeOnEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') onClose() }; if (open) document.addEventListener('keydown', closeOnEscape); return () => document.removeEventListener('keydown', closeOnEscape) }, [onClose, open]); if (!open) return null; return <div className="fixed inset-0 z-30 lg:hidden" role="presentation"><button type="button" className="absolute inset-0 bg-black/70" aria-label="Закрыть навигацию" onClick={onClose} /><section className="relative h-full w-80 max-w-[calc(100%-2rem)]" role="dialog" aria-modal="true" aria-label="Навигация"><div className="absolute right-2 top-2 z-10"><Button ref={closeButtonRef} variant="ghost" className="px-2" aria-label="Закрыть навигацию" icon={<X className="size-5" aria-hidden="true" />} onClick={onClose} /></div><Sidebar onNavigate={onClose} /></section></div> }
