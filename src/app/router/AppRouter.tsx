@@ -1,13 +1,18 @@
 import { Route, Routes } from 'react-router'
 import { CategoriesPage } from '../../pages/CategoriesPage.tsx'
 import { CategoryPage } from '../../pages/CategoryPage.tsx'
+import { CreateTopicPage } from '../../pages/CreateTopicPage.tsx'
 import { ForbiddenPage } from '../../pages/ForbiddenPage.tsx'
 import { HomePage } from '../../pages/HomePage.tsx'
+import { LoginPage } from '../../pages/LoginPage.tsx'
 import { NotFoundPage } from '../../pages/NotFoundPage.tsx'
 import { PlaceholderPage } from '../../pages/PlaceholderPage.tsx'
+import { RegisterPage } from '../../pages/RegisterPage.tsx'
 import { SearchPage } from '../../pages/SearchPage.tsx'
+import { SettingsPage } from '../../pages/SettingsPage.tsx'
 import { TopicPage } from '../../pages/TopicPage.tsx'
 import { UserProfilePage } from '../../pages/UserProfilePage.tsx'
 import { MainLayout } from '../../widgets/layout/MainLayout.tsx'
+import { GuestRoute, ProtectedRoute } from './guards.tsx'
 
-export function AppRouter() { return <Routes><Route element={<MainLayout />}><Route path="/" element={<HomePage />} /><Route path="/categories" element={<CategoriesPage />} /><Route path="/categories/:slug" element={<CategoryPage />} /><Route path="/topics/:id" element={<TopicPage />} /><Route path="/search" element={<SearchPage />} /><Route path="/users/:username" element={<UserProfilePage />} /><Route path="/topics/new" element={<PlaceholderPage title="Новая тема" />} /><Route path="/bookmarks" element={<PlaceholderPage title="Избранное" />} /><Route path="/settings" element={<PlaceholderPage title="Настройки" />} /><Route path="/moderation/reports" element={<PlaceholderPage title="Жалобы" />} /><Route path="/moderation/users" element={<PlaceholderPage title="Блокировки пользователей" />} /><Route path="/admin/categories" element={<PlaceholderPage title="Управление категориями" />} /><Route path="/admin/users" element={<PlaceholderPage title="Управление пользователями" />} /><Route path="/403" element={<ForbiddenPage />} /><Route path="*" element={<NotFoundPage />} /></Route><Route path="/login" element={<PlaceholderPage title="Вход" />} /><Route path="/register" element={<PlaceholderPage title="Регистрация" />} /></Routes> }
+export function AppRouter() { return <Routes><Route element={<MainLayout />}><Route path="/" element={<HomePage />} /><Route path="/categories" element={<CategoriesPage />} /><Route path="/categories/:slug" element={<CategoryPage />} /><Route path="/topics/:id" element={<TopicPage />} /><Route path="/search" element={<SearchPage />} /><Route path="/users/:username" element={<UserProfilePage />} /><Route path="/topics/new" element={<ProtectedRoute><CreateTopicPage /></ProtectedRoute>} /><Route path="/bookmarks" element={<ProtectedRoute><PlaceholderPage title="Избранное" /></ProtectedRoute>} /><Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} /><Route path="/moderation/reports" element={<ProtectedRoute roles={['moderator', 'admin']}><PlaceholderPage title="Жалобы" /></ProtectedRoute>} /><Route path="/moderation/users" element={<ProtectedRoute roles={['moderator', 'admin']}><PlaceholderPage title="Блокировки пользователей" /></ProtectedRoute>} /><Route path="/admin/categories" element={<ProtectedRoute roles={['admin']}><PlaceholderPage title="Управление категориями" /></ProtectedRoute>} /><Route path="/admin/users" element={<ProtectedRoute roles={['admin']}><PlaceholderPage title="Управление пользователями" /></ProtectedRoute>} /><Route path="/403" element={<ForbiddenPage />} /><Route path="*" element={<NotFoundPage />} /></Route><Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} /><Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} /></Routes> }

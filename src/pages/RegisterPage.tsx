@@ -1,0 +1,11 @@
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { Link, useNavigate } from 'react-router'
+import { z } from 'zod'
+import { useAuth } from '../features/auth/model/useAuth.ts'
+import { Button } from '../shared/ui/Button.tsx'
+import { Input } from '../shared/ui/Input.tsx'
+
+const schema = z.object({ username: z.string().min(2).max(32).regex(/^[a-zA-Z0-9_]+$/), email: z.string().email().max(254), password: z.string().min(8).max(128), passwordConfirmation: z.string() }).refine((value) => value.password === value.passwordConfirmation, { path: ['passwordConfirmation'], message: 'Пароли не совпадают.' })
+type RegisterValues = z.infer<typeof schema>
+export function RegisterPage() { const { register } = useAuth(); const navigate = useNavigate(); const form = useForm<RegisterValues>({ resolver: zodResolver(schema) }); const submit = async (values: RegisterValues) => { try { await register({ username: values.username, email: values.email, password: values.password }); navigate('/', { replace: true }) } catch { form.setError('root', { message: 'Не удалось зарегистрироваться. Возможно, username или email уже заняты.' }) } }; return <main className="mx-auto max-w-md px-4 py-12"><h1 className="text-2xl font-medium">Регистрация</h1><form className="mt-6 grid gap-4" onSubmit={form.handleSubmit(submit)}><Input label="Username" autoComplete="username" error={form.formState.errors.username?.message} {...form.register('username')} /><Input label="Email" type="email" autoComplete="email" error={form.formState.errors.email?.message} {...form.register('email')} /><Input label="Пароль" type="password" autoComplete="new-password" error={form.formState.errors.password?.message} {...form.register('password')} /><Input label="Повторите пароль" type="password" autoComplete="new-password" error={form.formState.errors.passwordConfirmation?.message} {...form.register('passwordConfirmation')} />{form.formState.errors.root ? <p role="alert" className="text-sm">{form.formState.errors.root.message}</p> : null}<Button type="submit" loading={form.formState.isSubmitting}>Создать аккаунт</Button></form><p className="mt-4 text-sm text-forum-muted">Уже есть аккаунт? <Link className="text-forum-text underline" to="/login">Войти</Link></p></main> }
