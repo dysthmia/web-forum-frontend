@@ -1,0 +1,6 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useAuth } from '../../auth/model/useAuth.ts'
+import { forumApi } from '../../forum/api/forumApi.ts'
+import { Button } from '../../../shared/ui/Button.tsx'
+
+export function TopicModerationMenu({ topicId, isClosed, isPinned }: { topicId: number; isClosed: boolean; isPinned: boolean }) { const { user } = useAuth(); const client = useQueryClient(); const allowed = user?.role === 'moderator' || user?.role === 'admin'; const mutation = useMutation({ mutationFn: async ({ action, value }: { action: 'closed' | 'pinned'; value: boolean }) => action === 'closed' ? forumApi.setTopicClosed(topicId, value) : forumApi.setTopicPinned(topicId, value), onSuccess: async () => { await Promise.all([client.invalidateQueries({ queryKey: ['topics', 'detail', topicId] }), client.invalidateQueries({ queryKey: ['topics'] })]) } }); if (!allowed) return null; return <div className="mt-4 flex flex-wrap gap-2"><Button variant="secondary" loading={mutation.isPending} onClick={() => mutation.mutate({ action: 'closed', value: !isClosed })}>{isClosed ? 'Открыть тему' : 'Закрыть тему'}</Button><Button variant="secondary" loading={mutation.isPending} onClick={() => mutation.mutate({ action: 'pinned', value: !isPinned })}>{isPinned ? 'Открепить тему' : 'Закрепить тему'}</Button></div> }
