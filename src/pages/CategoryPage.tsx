@@ -1,6 +1,7 @@
 import { useParams, useSearchParams } from 'react-router'
 import { TopicRow } from '../entities/topic/ui/TopicRow.tsx'
-import { useCategoryQuery, useCategoryTopicsQuery } from '../features/forum/api/queries.ts'
+import { useCategoryQuery } from '../features/categories/api/queries.ts'
+import { useCategoryTopicsQuery } from '../features/forum/api/queries.ts'
 import { formatDate } from '../shared/lib/formatDate.ts'
 import { Container } from '../shared/ui/Container.tsx'
 import { EmptyState } from '../shared/ui/EmptyState.tsx'

@@ -3,10 +3,12 @@ export class ApiError extends Error {
   public readonly name = 'ApiError'
   public readonly code: ApiErrorCode
   public readonly status?: number
+  public readonly problemTitle?: string
 
-  constructor(code: ApiErrorCode, message: string, status?: number) {
+  constructor(code: ApiErrorCode, message: string, status?: number, problemTitle?: string) {
     super(message)
     this.code = code
     this.status = status
+    this.problemTitle = problemTitle
   }
 }

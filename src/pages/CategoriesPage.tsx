@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { useCategoriesQuery } from '../features/forum/api/queries.ts'
+import { useCategoriesQuery } from '../features/categories/api/queries.ts'
 import { Container } from '../shared/ui/Container.tsx'
 import { EmptyState } from '../shared/ui/EmptyState.tsx'
 import { ErrorState } from '../shared/ui/ErrorState.tsx'
