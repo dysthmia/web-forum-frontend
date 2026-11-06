@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { PropsWithChildren } from 'react'
 import { setAccessToken } from '../../../shared/api/httpClient.ts'
-import { authApi, type AuthResponse, type LoginRequest, type RegisterRequest } from '../api/authApi.ts'
+import { authApi, type AuthResponse, type LoginRequest, type RegisterRequest, type UpdateProfileRequest } from '../api/authApi.ts'
 import type { AuthStatus, OwnUserProfile } from './types.ts'
 import { AuthContext } from './AuthContext.ts'
 
@@ -43,6 +43,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
     user,
     login: async (input: LoginRequest) => applyAuth(await authApi.login(input)),
     register: async (input: RegisterRequest) => applyAuth(await authApi.register(input)),
+    updateProfile: async (input: UpdateProfileRequest) => {
+      const profile = await authApi.updateProfile(input)
+      setUser(profile)
+      return profile
+    },
     logout: async () => {
       try {
         await authApi.logout()

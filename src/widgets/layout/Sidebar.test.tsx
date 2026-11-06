@@ -1,7 +1,11 @@
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { Sidebar } from './Sidebar.tsx'
+
+const categoriesState = vi.hoisted(() => ({ isPending: false, isError: false, data: [{ id: 1, name: 'Общее', slug: 'general', description: null }] }))
+
+vi.mock('../../features/categories/api/queries.ts', () => ({ useCategoriesQuery: () => categoriesState }))
 
 describe('Sidebar', () => {
   it('marks only Home as active on the default feed', () => {
@@ -16,5 +20,11 @@ describe('Sidebar', () => {
 
     expect(screen.getByRole('link', { name: 'Главная' })).not.toHaveAttribute('aria-current')
     expect(screen.getByRole('link', { name: 'Популярные' })).toHaveAttribute('aria-current', 'page')
+  })
+
+  it('links each category to its page', () => {
+    render(<MemoryRouter><Sidebar /></MemoryRouter>)
+
+    expect(screen.getByRole('link', { name: 'Общее' })).toHaveAttribute('href', '/categories/general')
   })
 })

@@ -1,6 +1,6 @@
 import { Bookmark, Folder, Home, TrendingUp } from 'lucide-react'
 import { Link, NavLink, useLocation } from 'react-router'
-import { EmptyState } from '../../shared/ui/EmptyState.tsx'
+import { useCategoriesQuery } from '../../features/categories/api/queries.ts'
 
 interface SidebarProps {
   onNavigate?: () => void
@@ -10,6 +10,7 @@ const itemClasses = (active: boolean) => `flex min-h-10 items-center gap-3 round
 
 export function Sidebar({ onNavigate }: SidebarProps) {
   const location = useLocation()
+  const categories = useCategoriesQuery()
   const activeFeed = new URLSearchParams(location.search).get('tab') === 'popular' ? 'popular' : 'new'
 
   return (
@@ -30,7 +31,12 @@ export function Sidebar({ onNavigate }: SidebarProps) {
       </nav>
       <section className="mt-6" aria-labelledby="categories-title">
         <h2 id="categories-title" className="px-3 text-xs font-medium uppercase tracking-wide text-forum-muted">Категории</h2>
-        <div className="mt-2 px-3"><EmptyState title="Категории появятся здесь" description="Нужен подтверждённый API-контракт." /></div>
+        <div className="mt-2 grid gap-1">
+          {categories.isPending ? <p className="px-3 text-sm text-forum-muted">Загрузка категорий…</p> : null}
+          {categories.isError ? <p className="px-3 text-sm text-forum-muted">Не удалось загрузить категории.</p> : null}
+          {categories.data?.map((category) => category.slug ? <NavLink key={category.id} to={`/categories/${category.slug}`} onClick={onNavigate} className={({ isActive }) => itemClasses(isActive)}>{category.name ?? `Категория #${category.id}`}</NavLink> : <span key={category.id} className="px-3 text-sm text-forum-muted">{category.name ?? `Категория #${category.id}`}</span>)}
+          {!categories.isPending && !categories.isError && categories.data?.length === 0 ? <p className="px-3 text-sm text-forum-muted">Категорий пока нет.</p> : null}
+        </div>
       </section>
     </aside>
   )
