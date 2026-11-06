@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import { describe, expect, it } from 'vitest'
@@ -8,12 +9,11 @@ const user = { id: 1, username: 'alice', email: 'alice@example.test', role: 'use
 
 function renderProtected(path: string, role: string) {
   const value: AuthContextValue = { status: 'authenticated', user: { ...user, role }, login: async () => undefined, register: async () => undefined, logout: async () => undefined }
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   render(
-    <AuthContext.Provider value={value}>
-      <MemoryRouter initialEntries={[path]}>
-        <AppRouter />
-      </MemoryRouter>
-    </AuthContext.Provider>,
+    <QueryClientProvider client={queryClient}><AuthContext.Provider value={value}>
+      <MemoryRouter initialEntries={[path]}><AppRouter /></MemoryRouter>
+    </AuthContext.Provider></QueryClientProvider>,
   )
 }
 
