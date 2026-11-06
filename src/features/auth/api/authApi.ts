@@ -8,7 +8,7 @@ export interface RegisterRequest { username: string; email: string; password: st
 export const authApi = {
   login: async (body: LoginRequest) => (await httpClient.post<AuthResponse>('/api/auth/login', body)).data,
   register: async (body: RegisterRequest) => (await httpClient.post<AuthResponse>('/api/auth/register', body)).data,
-  refresh: async () => (await httpClient.post<AuthResponse>('/api/auth/refresh')).data,
-  logout: async () => { await httpClient.post('/api/auth/logout') },
+  refresh: async () => (await httpClient.post<AuthResponse>('/api/auth/refresh', {})).data,
+  logout: async () => { await httpClient.post('/api/auth/logout', {}) },
   me: async () => (await httpClient.get<OwnUserProfile>('/api/users/me')).data,
 }
