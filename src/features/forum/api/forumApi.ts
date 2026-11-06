@@ -31,6 +31,7 @@ export interface ListOptions { page?: number; pageSize?: number }
 export interface CategoryTopicOptions extends ListOptions { sort?: string }
 export interface CreateTopicInput { categoryId: number; title: string; content: string }
 export interface CreateTopicResponse { topicId: number }
+export interface BookmarkTopic { topicId: number; title: string; isClosed: boolean; isPinned: boolean; topicCreatedAt: string; bookmarkedAt: string }
 export type ReactionType = -1 | 1
 export interface ReactionCounts { postId: number; likeCount: number; dislikeCount: number; currentUserReaction: ReactionType | null }
 
@@ -51,6 +52,7 @@ export const forumApi = {
   async removeReaction(postId: number): Promise<void> { await httpClient.delete(`/api/posts/${postId}/reactions`) },
   async getReactionCounts(postIds: number[]): Promise<ReactionCounts[]> { return (await httpClient.get<ReactionCounts[]>('/api/reactions/counts', { params: { postIds } })).data },
   async getBookmarkStatus(topicId: number): Promise<{ isBookmarked: boolean }> { return (await httpClient.get<{ isBookmarked: boolean }>(`/api/bookmarks/${topicId}`)).data },
+  async getBookmarks(options: ListOptions): Promise<PagedResponse<BookmarkTopic>> { return (await httpClient.get<PagedResponse<BookmarkTopic>>('/api/bookmarks', { params: { Page: options.page, PageSize: options.pageSize } })).data },
   async addBookmark(topicId: number): Promise<void> { await httpClient.put(`/api/bookmarks/${topicId}`) },
   async removeBookmark(topicId: number): Promise<void> { await httpClient.delete(`/api/bookmarks/${topicId}`) },
   async createReport(postId: number, reason: string): Promise<void> { await httpClient.post('/api/reports', { postId, reason }) },
