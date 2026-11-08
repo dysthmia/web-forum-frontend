@@ -11,7 +11,7 @@
 </div>
 
 
-![alt text](docs/image.png)
+![alt text](image.png)
 
 ## О проекте
 
