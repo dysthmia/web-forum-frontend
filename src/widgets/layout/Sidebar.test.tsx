@@ -27,4 +27,16 @@ describe('Sidebar', () => {
 
     expect(screen.getByRole('link', { name: 'Общее' })).toHaveAttribute('href', '/categories/general')
   })
+
+  it('uses the Categories heading as the link to all categories', () => {
+    render(<MemoryRouter><Sidebar /></MemoryRouter>)
+
+    expect(screen.getByRole('link', { name: 'Категории' })).toHaveAttribute('href', '/categories')
+  })
+
+  it('keeps overflowing navigation inside a scrollable sidebar', () => {
+    render(<MemoryRouter><Sidebar /></MemoryRouter>)
+
+    expect(screen.getByRole('complementary', { name: 'Навигация форума' })).toHaveClass('overflow-y-auto')
+  })
 })

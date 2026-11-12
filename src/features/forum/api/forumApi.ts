@@ -50,7 +50,7 @@ export const forumApi = {
   async deleteTopic(topicId: number): Promise<void> { await httpClient.delete(`/api/topics/${topicId}`) },
   async setReaction(postId: number, type: ReactionType): Promise<void> { await httpClient.put(`/api/posts/${postId}/reactions`, { type }) },
   async removeReaction(postId: number): Promise<void> { await httpClient.delete(`/api/posts/${postId}/reactions`) },
-  async getReactionCounts(postIds: number[]): Promise<ReactionCounts[]> { return (await httpClient.get<ReactionCounts[]>('/api/reactions/counts', { params: { postIds } })).data },
+  async getReactionCounts(postIds: number[]): Promise<ReactionCounts[]> { return (await httpClient.get<ReactionCounts[]>('/api/reactions/counts', { params: { postIds }, paramsSerializer: { indexes: null } })).data },
   async getBookmarkStatus(topicId: number): Promise<{ isBookmarked: boolean }> { return (await httpClient.get<{ isBookmarked: boolean }>(`/api/bookmarks/${topicId}`)).data },
   async getBookmarks(options: ListOptions): Promise<PagedResponse<BookmarkTopic>> { return (await httpClient.get<PagedResponse<BookmarkTopic>>('/api/bookmarks', { params: { Page: options.page, PageSize: options.pageSize } })).data },
   async addBookmark(topicId: number): Promise<void> { await httpClient.put(`/api/bookmarks/${topicId}`) },

@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+Web_Forum_Frontend_Codex_Prompts
+docs
+.env
